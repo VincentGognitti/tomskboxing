@@ -3,52 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* Уменьшаем общие отступы страницы */
         body { 
             background: #222; 
             color: white; 
             font-family: sans-serif; 
-            padding: 5px; 
+            padding: 8px; 
             margin: 0;
             font-size: 12px;
         }
         
-        h3 { 
-            margin: 0 0 8px 0; 
-            font-size: 14px; 
-            text-align: center;
-        }
+        h3 { margin: 0 0 10px 0; font-size: 14px; text-align: center; }
 
-        /* Сетка для кнопок в 2 колонки */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 5px;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         button { 
             width: 100%; 
-            padding: 8px 4px; /* Уменьшили высоту кнопок */
-            font-size: 12px;  /* Уменьшили шрифт */
+            padding: 10px 4px; 
+            font-size: 12px;  
             cursor: pointer;
             border: none; 
-            border-radius: 3px; 
+            border-radius: 4px; 
             font-weight: bold;
-            white-space: nowrap; /* Текст не будет переноситься */
+            white-space: nowrap; 
+            color: white;
+            transition: opacity 0.2s;
         }
+        button:active { opacity: 0.7; }
 
-        /* Кнопки на всю ширину (для основных действий) */
-        .full-width {
-            grid-column: span 2;
-        }
+        .full-width { grid-column: span 2; }
 
-        /* Цвета */
-        #btn-next-bout  { background: #d9534f; color: white; }
-        #btn-prev-bout  { background: #a94442; color: white; }
-        #btn-next-round { background: #5bc0de; color: white; }
-        #btn-prev-round { background: #31b0d5; color: white; }
-        #btn-reset-round{ background: #f0ad4e; color: white; }
+        #btn-next-bout  { background: #d9534f; padding: 14px 4px; font-size: 14px;}
+        #btn-prev-bout  { background: #a94442; }
+        #btn-next-round { background: #5bc0de; }
+        #btn-prev-round { background: #31b0d5; }
+        #btn-reset-round{ background: #f0ad4e; }
+        #btn-toggle-overlay { background: #5cb85c; margin-top: 4px; }
 
         .status { 
             margin-top: 8px; 
@@ -60,25 +54,24 @@
     </style>
 </head>
 <body>
-    <h3>Управление боем</h3>
+    <h3>Управление трансляцией</h3>
     
     <div class="grid">
-        <!-- Кнопка на весь ряд -->
-        <button id="btn-next-bout" class="full-width">Следующий БОЙ</button>
+        <button id="btn-next-bout" class="full-width">СЛЕДУЮЩИЙ БОЙ</button>
         
-        <!-- Кнопки в два столбца -->
         <button id="btn-next-round">Раунд +1</button>
         <button id="btn-prev-round">Раунд -1</button>
         
-        <!-- Вспомогательные кнопки -->
         <button id="btn-prev-bout">Пред. бой</button>
         <button id="btn-reset-round">Сброс раунда</button>
+        
+        <button id="btn-toggle-overlay" class="full-width">Скрыть/Показать плашки</button>
     </div>
 
     <div class="status" id="status">Готово</div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwx8Tw5bGYMhCoVmySMPtYuQrocWSSSl1jATQbOVbQ5Bbla0pSnrJMtOJ1dh9vKomYt/exec'; // Не забудьте вставить URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwYoTvC2zHZ7MCZVnQcZa0AkZXuwDin0tAbjH_Mwjex3kVRTeOIxStTppf5dyes8BLe/exec'; // Не забудьте вставить URL!
         
         async function sendCommand(action) {
             const statusEl = document.getElementById('status');
@@ -87,14 +80,12 @@
             
             try {
                 await fetch(API_URL + '?action=' + action + '&t=' + Date.now());
-                statusEl.textContent = 'Успешно: ' + action;
-                statusEl.style.color = '#5cb85c'; // Зеленый при успехе
+                statusEl.textContent = 'Успешно';
+                statusEl.style.color = '#5cb85c';
             } catch (e) {
                 statusEl.textContent = 'Ошибка сети!';
-                statusEl.style.color = '#d9534f'; // Красный при ошибке
+                statusEl.style.color = '#d9534f';
             }
-            
-            // Через 2 секунды убираем текст статуса
             setTimeout(() => { statusEl.textContent = ''; }, 2000);
         }
         
@@ -103,6 +94,7 @@
         document.getElementById('btn-next-round').onclick = () => sendCommand('nextRound');
         document.getElementById('btn-prev-round').onclick = () => sendCommand('prevRound');
         document.getElementById('btn-reset-round').onclick= () => sendCommand('resetRound');
+        document.getElementById('btn-toggle-overlay').onclick = () => sendCommand('toggleOverlay');
     </script>
 </body>
 </html>
