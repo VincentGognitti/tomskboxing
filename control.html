@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Уменьшаем общие отступы страницы */
+        body { 
+            background: #222; 
+            color: white; 
+            font-family: sans-serif; 
+            padding: 5px; 
+            margin: 0;
+            font-size: 12px;
+        }
+        
+        h3 { 
+            margin: 0 0 8px 0; 
+            font-size: 14px; 
+            text-align: center;
+        }
+
+        /* Сетка для кнопок в 2 колонки */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 8px 4px; /* Уменьшили высоту кнопок */
+            font-size: 12px;  /* Уменьшили шрифт */
+            cursor: pointer;
+            border: none; 
+            border-radius: 3px; 
+            font-weight: bold;
+            white-space: nowrap; /* Текст не будет переноситься */
+        }
+
+        /* Кнопки на всю ширину (для основных действий) */
+        .full-width {
+            grid-column: span 2;
+        }
+
+        /* Цвета */
+        #btn-next-bout  { background: #d9534f; color: white; }
+        #btn-prev-bout  { background: #a94442; color: white; }
+        #btn-next-round { background: #5bc0de; color: white; }
+        #btn-prev-round { background: #31b0d5; color: white; }
+        #btn-reset-round{ background: #f0ad4e; color: white; }
+
+        .status { 
+            margin-top: 8px; 
+            font-size: 10px; 
+            color: #888; 
+            text-align: center;
+            height: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Управление боем</h3>
+    
+    <div class="grid">
+        <!-- Кнопка на весь ряд -->
+        <button id="btn-next-bout" class="full-width">Следующий БОЙ</button>
+        
+        <!-- Кнопки в два столбца -->
+        <button id="btn-next-round">Раунд +1</button>
+        <button id="btn-prev-round">Раунд -1</button>
+        
+        <!-- Вспомогательные кнопки -->
+        <button id="btn-prev-bout">Пред. бой</button>
+        <button id="btn-reset-round">Сброс раунда</button>
+    </div>
+
+    <div class="status" id="status">Готово</div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwx8Tw5bGYMhCoVmySMPtYuQrocWSSSl1jATQbOVbQ5Bbla0pSnrJMtOJ1dh9vKomYt/exec'; // Не забудьте вставить URL
+        
+        async function sendCommand(action) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Отправка...';
+            statusEl.style.color = '#f0ad4e';
+            
+            try {
+                await fetch(API_URL + '?action=' + action + '&t=' + Date.now());
+                statusEl.textContent = 'Успешно: ' + action;
+                statusEl.style.color = '#5cb85c'; // Зеленый при успехе
+            } catch (e) {
+                statusEl.textContent = 'Ошибка сети!';
+                statusEl.style.color = '#d9534f'; // Красный при ошибке
+            }
+            
+            // Через 2 секунды убираем текст статуса
+            setTimeout(() => { statusEl.textContent = ''; }, 2000);
+        }
+        
+        document.getElementById('btn-next-bout').onclick  = () => sendCommand('nextBout');
+        document.getElementById('btn-prev-bout').onclick  = () => sendCommand('prevBout');
+        document.getElementById('btn-next-round').onclick = () => sendCommand('nextRound');
+        document.getElementById('btn-prev-round').onclick = () => sendCommand('prevRound');
+        document.getElementById('btn-reset-round').onclick= () => sendCommand('resetRound');
+    </script>
+</body>
+</html>
