@@ -4,16 +4,82 @@
     <meta charset="UTF-8">
     <style>
         body { 
-            background: #222; 
-            color: white; 
-            font-family: sans-serif; 
-            padding: 8px; 
+            background: #1e1e1e; 
+            color: #eee; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 6px; 
             margin: 0;
             font-size: 12px;
         }
         
-        h3 { margin: 0 0 10px 0; font-size: 14px; text-align: center; }
+        h3 { margin: 0 0 8px 0; font-size: 13px; text-align: center; color: #fff; font-weight: 600;}
 
+        /* Компактный блок монитора */
+        .monitor {
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin-bottom: 8px;
+        }
+        
+        .monitor-title {
+            font-size: 9px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+        }
+
+        /* Строка с именами */
+        .mon-names {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 1.1;
+        }
+        .mon-red { color: #ff5252; }
+        .mon-blue { color: #448aff; }
+
+        /* Строка с регионами */
+        .mon-regions {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        /* Строка с центральными данными */
+        .mon-center-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            border-top: 1px solid #2a2a2a;
+            padding-top: 4px;
+        }
+        .mon-bout { font-weight: bold; color: #fff; }
+        .mon-weight { color: #ffca28; font-weight: bold; }
+        .mon-round { color: #ffca28; font-weight: bold; }
+
+        .monitor-hidden { 
+            text-align: center; 
+            color: #ff5252; 
+            font-weight: bold; 
+            font-size: 10px;
+            display: none; 
+            margin-top: 4px;
+            background: rgba(255, 82, 82, 0.1);
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        /* Сетка кнопок */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -37,15 +103,15 @@
 
         .full-width { grid-column: span 2; }
 
-        #btn-next-bout  { background: #d9534f; padding: 14px 4px; font-size: 14px;}
-        #btn-prev-bout  { background: #a94442; }
-        #btn-next-round { background: #5bc0de; }
-        #btn-prev-round { background: #31b0d5; }
-        #btn-reset-round{ background: #f0ad4e; }
-        #btn-toggle-overlay { background: #5cb85c; margin-top: 4px; }
+        #btn-next-bout  { background: #d32f2f; padding: 12px 4px; font-size: 14px;}
+        #btn-prev-bout  { background: #b71c1c; }
+        #btn-next-round { background: #0288d1; }
+        #btn-prev-round { background: #01579b; }
+        #btn-reset-round{ background: #f57c00; }
+        #btn-toggle-overlay { background: #388e3c; margin-top: 4px; }
 
         .status { 
-            margin-top: 8px; 
+            margin-top: 6px; 
             font-size: 10px; 
             color: #888; 
             text-align: center;
@@ -55,7 +121,30 @@
 </head>
 <body>
     <h3>Управление трансляцией</h3>
-    
+
+    <!-- КОМПАКТНЫЙ МОНИТОР ЭФИРА -->
+    <div class="monitor">
+        <div class="monitor-title">В эфире</div>
+        
+        <div class="mon-names">
+            <span class="mon-red" id="mon-red">—</span>
+            <span class="mon-blue" id="mon-blue">—</span>
+        </div>
+        <div class="mon-regions">
+            <span id="mon-red-region"></span>
+            <span id="mon-blue-region" style="text-align: right;"></span>
+        </div>
+        
+        <div class="mon-center-row">
+            <span class="mon-bout" id="mon-bout">БОЙ —</span>
+            <span class="mon-weight" id="mon-weight">—</span>
+            <span class="mon-round" id="mon-round">РАУНД —</span>
+        </div>
+
+        <div class="monitor-hidden" id="mon-hidden">⚠️ ПЛАШКИ СКРЫТЫ</div>
+    </div>
+
+    <!-- КНОПКИ -->
     <div class="grid">
         <button id="btn-next-bout" class="full-width">СЛЕДУЮЩИЙ БОЙ</button>
         
@@ -76,17 +165,49 @@
         async function sendCommand(action) {
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Отправка...';
-            statusEl.style.color = '#f0ad4e';
+            statusEl.style.color = '#f57c00';
             
             try {
                 await fetch(API_URL + '?action=' + action + '&t=' + Date.now());
                 statusEl.textContent = 'Успешно';
-                statusEl.style.color = '#5cb85c';
+                statusEl.style.color = '#4caf50';
+                setTimeout(fetchMonitorData, 500); 
             } catch (e) {
                 statusEl.textContent = 'Ошибка сети!';
-                statusEl.style.color = '#d9534f';
+                statusEl.style.color = '#ff5252';
             }
             setTimeout(() => { statusEl.textContent = ''; }, 2000);
+        }
+        
+        async function fetchMonitorData() {
+            try {
+                const r = await fetch(API_URL + '?action=get&t=' + Date.now());
+                const d = await r.json();
+                
+                document.getElementById('mon-red').textContent = d.red || '—';
+                document.getElementById('mon-blue').textContent = d.blue || '—';
+                document.getElementById('mon-red-region').textContent = d.redRegion || '';
+                document.getElementById('mon-blue-region').textContent = d.blueRegion || '';
+                
+                document.getElementById('mon-bout').textContent = 'БОЙ ' + d.bout;
+                
+                let weightText = String(d.weight || '').trim();
+                if (weightText !== '' && !weightText.toLowerCase().includes('кг')) {
+                    weightText += ' КГ';
+                } else if (weightText === '') {
+                    weightText = '—';
+                } else {
+                    weightText = weightText.replace(/кг/gi, 'КГ');
+                }
+                document.getElementById('mon-weight').textContent = weightText.toUpperCase();
+                document.getElementById('mon-round').textContent = 'РАУНД ' + d.round + '/' + d.maxRounds;
+                
+                const hiddenEl = document.getElementById('mon-hidden');
+                hiddenEl.style.display = (d.visible === false) ? 'block' : 'none';
+                
+            } catch (e) {
+                console.error('Ошибка монитора:', e);
+            }
         }
         
         document.getElementById('btn-next-bout').onclick  = () => sendCommand('nextBout');
@@ -95,6 +216,9 @@
         document.getElementById('btn-prev-round').onclick = () => sendCommand('prevRound');
         document.getElementById('btn-reset-round').onclick= () => sendCommand('resetRound');
         document.getElementById('btn-toggle-overlay').onclick = () => sendCommand('toggleOverlay');
+
+        fetchMonitorData();
+        setInterval(fetchMonitorData, 2000);
     </script>
 </body>
 </html>
