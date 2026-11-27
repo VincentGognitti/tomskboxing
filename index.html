@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Музыка для выхода</title>
+<title>Музыка для выхода — Турнир памяти Николая Путина</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 50% 0%, #3a2a00 0%, #0d0d0d 60%);
+    background:
+      radial-gradient(circle at 50% 0%, #0a2818 0%, #060a08 55%, #040404 100%);
     color: #fff;
     min-height: 100vh;
     display: flex;
@@ -17,97 +18,220 @@
     justify-content: center;
     padding: 20px;
   }
+
   .card {
     width: 100%;
-    max-width: 520px;
-    background: rgba(20,20,20,0.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,204,0,0.3);
-    border-radius: 20px;
-    padding: 40px 36px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(255,204,0,0.08);
+    max-width: 540px;
+    background: rgba(12, 20, 15, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 22px;
+    padding: 44px 40px 40px;
+    box-shadow:
+      0 24px 70px rgba(0, 0, 0, 0.65),
+      0 0 100px rgba(34, 197, 94, 0.07);
+    position: relative;
+    overflow: hidden;
   }
-  .badge {
+
+  /* Лёгкое свечение сверху карточки */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(34,197,94,0.16) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Блок с названием турнира */
+  .tournament {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  .tournament-label {
     display: inline-block;
-    background: #FFCC00;
-    color: #000;
     font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 2px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #22c55e;
     padding: 4px 12px;
+    border: 1px solid rgba(34, 197, 94, 0.35);
     border-radius: 999px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
+  .tournament-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: #e8f5ee;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tournament-title strong { color: #22c55e; font-weight: 700; }
+
+  /* Разделитель */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 26px 0 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34,197,94,0.35), transparent);
+  }
+  .divider span {
+    color: #22c55e;
+    font-size: 14px;
+  }
+
   h1 {
     font-family: 'Oswald', sans-serif;
-    font-size: 32px;
-    line-height: 1.1;
-    margin-bottom: 8px;
+    font-size: 30px;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
   }
-  h1 span { color: #FFCC00; }
+  h1 span { color: #22c55e; }
+
   .subtitle {
-    color: #999;
-    font-size: 15px;
+    color: #8a9c92;
+    font-size: 14px;
+    text-align: center;
     margin-bottom: 32px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
   }
+
   label {
     display: block;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 8px;
-    color: #ddd;
+    color: #c9d6ce;
+    letter-spacing: 0.3px;
   }
+
   select, input {
     width: 100%;
     padding: 14px 16px;
-    background: #1a1a1a;
-    border: 2px solid #333;
+    background: #0a1410;
+    border: 2px solid #1e2e25;
     border-radius: 12px;
     color: #fff;
     font-size: 16px;
     font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   }
   select:focus, input:focus {
     outline: none;
-    border-color: #FFCC00;
-    box-shadow: 0 0 0 4px rgba(255,204,0,0.15);
+    border-color: #22c55e;
+    background: #0d1a13;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
   }
-  .field { margin-bottom: 22px; }
-  .hint { font-size: 12px; color: #777; margin-top: 6px; }
+  select option { background: #0a1410; color: #fff; }
+
+  .field { margin-bottom: 22px; position: relative; z-index: 1; }
+
+  .hint {
+    font-size: 12px;
+    color: #6b7f73;
+    margin-top: 8px;
+    padding-left: 2px;
+  }
+
   button {
     width: 100%;
     padding: 16px;
-    background: #FFCC00;
-    color: #000;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: #04140a;
     border: none;
     border-radius: 12px;
     font-family: 'Oswald', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1px;
+    font-size: 17px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.2s;
+    transition: transform 0.1s, box-shadow 0.25s, filter 0.2s;
+    position: relative;
+    z-index: 1;
+    margin-top: 6px;
   }
-  button:hover { box-shadow: 0 8px 30px rgba(255,204,0,0.4); }
+  button:hover {
+    box-shadow: 0 10px 34px rgba(34, 197, 94, 0.35);
+    filter: brightness(1.05);
+  }
   button:active { transform: scale(0.98); }
   button:disabled { opacity: 0.6; cursor: wait; }
+
   .success {
     display: none;
     text-align: center;
-    padding: 20px 0;
+    padding: 24px 0 8px;
+    position: relative;
+    z-index: 1;
   }
-  .success h2 { font-family: 'Oswald', sans-serif; color: #FFCC00; margin-bottom: 10px; }
-  .success p { color: #bbb; }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.12);
+    border: 2px solid #22c55e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 30px;
+  }
+  .success h2 {
+    font-family: 'Oswald', sans-serif;
+    color: #22c55e;
+    font-size: 24px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .success p { color: #9aada1; font-size: 14px; }
+
+  @media (max-width: 480px) {
+    .card { padding: 32px 22px 28px; }
+    h1 { font-size: 24px; }
+    .tournament-title { font-size: 14px; }
+  }
 </style>
 </head>
 <body>
 <div class="card">
-  <form id="form">
-    <span class="badge">FIGHT NIGHT</span>
-    <h1>Выбери свою <span>музыку</span> для выхода</h1>
-    <p class="subtitle">Один боксёр — один трек. Вставь ссылку с Яндекс.Музыки.</p>
 
+  <!-- Название турнира -->
+  <div class="tournament">
+    <span class="tournament-label">МУЗЫКА ДЛЯ ВЫХОДА</span>
+    <p class="tournament-title">
+      Межрегиональный турнир по боксу<br>
+      памяти <strong>Николая Путина</strong>
+    </p>
+  </div>
+
+  <div class="divider"><span>🥊</span></div>
+
+  <h1>Выбери свою <span>музыку</span></h1>
+  <p class="subtitle">Один боксёр — один трек. Вставь ссылку на песню с Яндекс.Музыки.</p>
+
+  <form id="form">
     <div class="field">
       <label for="boxer">Кто ты?</label>
       <select id="boxer" required>
@@ -117,6 +241,7 @@
         <option>Сидоров Алексей</option>
         <option>Кузнецов Дмитрий</option>
         <option>Смирнов Николай</option>
+        <!-- Добавь остальных боксёров -->
       </select>
     </div>
 
@@ -132,13 +257,14 @@
   </form>
 
   <div class="success" id="success">
-    <h2>✅ Принято!</h2>
+    <div class="success-icon">✓</div>
+    <h2>Принято!</h2>
     <p>Твой трек сохранён. Увидимся на ринге 🥊</p>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = 'ВСТАВЬТЕ_СЮДА_ВАШ_URL_ИЗ_APPS_SCRIPT';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIdF-swamOtzKqbhLNNnqt1ZLDKbdwm9DhDOPXpCuNyGkSYOPWaFg9By_t4pZJjjHW/exec';
 
 document.getElementById('form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -154,7 +280,7 @@ document.getElementById('form').addEventListener('submit', async (e) => {
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors', // обязательно для Apps Script
+      mode: 'no-cors',
       headers: {'Content-Type': 'text/plain'},
       body: JSON.stringify(data)
     });
