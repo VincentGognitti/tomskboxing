@@ -9,8 +9,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', sans-serif;
-    background:
-      radial-gradient(circle at 50% 0%, #0a2818 0%, #060a08 55%, #040404 100%);
+    background: radial-gradient(circle at 50% 0%, #0a2818 0%, #060a08 55%, #040404 100%);
     color: #fff;
     min-height: 100vh;
     display: flex;
@@ -48,13 +47,31 @@
     pointer-events: none;
   }
 
-  /* Блок с названием турнира */
+  /* Блок с логотипом и названием */
   .tournament {
     text-align: center;
     margin-bottom: 30px;
     position: relative;
     z-index: 1;
   }
+
+  .logo-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .logo-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 15%; /* Центрируем лицо */
+    border: 3px solid #22c55e;
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+    background: #fff; /* Белый фон для контраста черных линий */
+  }
+
   .tournament-label {
     display: inline-block;
     font-family: 'Oswald', sans-serif;
@@ -66,6 +83,7 @@
     border-radius: 999px;
     margin-bottom: 14px;
   }
+
   .tournament-title {
     font-family: 'Oswald', sans-serif;
     font-size: 17px;
@@ -92,10 +110,7 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(34,197,94,0.35), transparent);
   }
-  .divider span {
-    color: #22c55e;
-    font-size: 14px;
-  }
+  .divider span { color: #22c55e; font-size: 14px; }
 
   h1 {
     font-family: 'Oswald', sans-serif;
@@ -155,6 +170,36 @@
     padding-left: 2px;
   }
 
+  /* Превью плеера */
+  .preview-wrap {
+    display: none;
+    margin-bottom: 22px;
+    position: relative;
+    z-index: 1;
+  }
+  .preview-wrap.visible { display: block; }
+
+  .preview-label {
+    font-size: 12px;
+    color: #6b7f73;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .preview-frame {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    background: #0a1410;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  #trackPreview {
+    display: block;
+    border: none;
+  }
+
   button {
     width: 100%;
     padding: 16px;
@@ -211,14 +256,20 @@
     .card { padding: 32px 22px 28px; }
     h1 { font-size: 24px; }
     .tournament-title { font-size: 14px; }
+    .logo-img { width: 100px; height: 100px; }
   }
 </style>
 </head>
 <body>
 <div class="card">
 
-  <!-- Название турнира -->
+  <!-- Название турнира и ЛОГОТИП -->
   <div class="tournament">
+    <div class="logo-wrapper">
+      <!-- ВАЖНО: сохраните картинку как logo.png в той же папке -->
+      <img src="logo.png" alt="Логотип турнира" class="logo-img">
+    </div>
+    
     <span class="tournament-label">МУЗЫКА ДЛЯ ВЫХОДА</span>
     <p class="tournament-title">
       Межрегиональный турнир по боксу<br>
@@ -236,28 +287,11 @@
       <label for="boxer">Кто ты?</label>
       <select id="boxer" required>
         <option value="" disabled selected>— Выбери своё имя —</option>
-        <option>Гасанов Эмин</option>
-        <option>Грохотов Матвей</option>
-        <option>Давыдов Дмитрий</option>
-        <option>Кадоркин Егор</option>
-        <option>Куулар Алаш</option>
-        <option>Лендинау Александр</option>
-        <option>Матусевич Андрей</option>
-        <option>Мовсисян Николай</option>
-        <option>Мустюков Захар</option>
-        <option>Нечаев Антон</option>
-        <option>Николаев Алексей</option>
-        <option>Ооржак Алим </option>
-        <option>Салахов Марат</option>
-        <option>Суханов Матвей</option>
-        <option>Ткачев Игорь</option>
-        <option>Успенский Георгий</option>
-        <option>Фрейзе Виктор</option>
-        <option>Чедушев Яков</option>
-        <option>Чернов Виталий</option>
-        <option>Чубенко Никита</option>
-        <option>Штурхецкий Иосиф</option>
-        <option>Шульц Артем</option>
+        <option>Иванов Иван</option>
+        <option>Петров Пётр</option>
+        <option>Сидоров Алексей</option>
+        <option>Кузнецов Дмитрий</option>
+        <option>Смирнов Николай</option>
         <!-- Добавь остальных боксёров -->
       </select>
     </div>
@@ -268,6 +302,20 @@
              pattern="https?://music\.yandex\.(ru|com)/.*"
              title="Ссылка должна быть с music.yandex.ru">
       <p class="hint">Поделиться → «Ссылка на трек» (не на плейлист)</p>
+    </div>
+
+    <!-- Блок превью плеера -->
+    <div class="preview-wrap" id="previewWrap">
+      <p class="preview-label">Предпрослушивание</p>
+      <div class="preview-frame">
+        <iframe id="trackPreview" 
+                src="" 
+                width="100%" 
+                height="180" 
+                frameborder="0" 
+                allow="clipboard-write">
+        </iframe>
+      </div>
     </div>
 
     <button type="submit" id="btn">Отправить</button>
@@ -283,6 +331,49 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIdF-swamOtzKqbhLNNnqt1ZLDKbdwm9DhDOPXpCuNyGkSYOPWaFg9By_t4pZJjjHW/exec';
 
+// --- Логика превью ---
+const urlInput = document.getElementById('url');
+const previewWrap = document.getElementById('previewWrap');
+const trackPreview = document.getElementById('trackPreview');
+
+// Регулярка для ссылок Яндекс.Музыки
+const YM_REGEX = /music\.yandex\.(ru|com)\/(?:album\/(\d+)\/)?track\/(\d+)/;
+
+function updatePreview() {
+  const value = urlInput.value.trim();
+  const match = value.match(YM_REGEX);
+
+  if (match) {
+    const albumId = match[2]; 
+    const trackId = match[3];
+    
+    // Собираем ссылку для iframe
+    const iframeSrc = albumId
+      ? `https://music.yandex.ru/iframe/#track/${trackId}/${albumId}`
+      : `https://music.yandex.ru/iframe/#track/${trackId}`;
+
+    trackPreview.src = iframeSrc;
+    previewWrap.classList.add('visible');
+  } else {
+    trackPreview.src = '';
+    previewWrap.classList.remove('visible');
+  }
+}
+
+// Дебаунс для ввода
+let debounceTimer;
+urlInput.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(updatePreview, 500);
+});
+
+// Мгновенная реакция на вставку из буфера
+urlInput.addEventListener('paste', () => {
+  setTimeout(updatePreview, 100);
+});
+
+
+// --- Логика отправки ---
 document.getElementById('form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('btn');
