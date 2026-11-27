@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Музыка для выхода</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at 50% 0%, #3a2a00 0%, #0d0d0d 60%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(20,20,20,0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,204,0,0.3);
+    border-radius: 20px;
+    padding: 40px 36px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 80px rgba(255,204,0,0.08);
+  }
+  .badge {
+    display: inline-block;
+    background: #FFCC00;
+    color: #000;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 32px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  h1 span { color: #FFCC00; }
+  .subtitle {
+    color: #999;
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #ddd;
+  }
+  select, input {
+    width: 100%;
+    padding: 14px 16px;
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  select:focus, input:focus {
+    outline: none;
+    border-color: #FFCC00;
+    box-shadow: 0 0 0 4px rgba(255,204,0,0.15);
+  }
+  .field { margin-bottom: 22px; }
+  .hint { font-size: 12px; color: #777; margin-top: 6px; }
+  button {
+    width: 100%;
+    padding: 16px;
+    background: #FFCC00;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  button:hover { box-shadow: 0 8px 30px rgba(255,204,0,0.4); }
+  button:active { transform: scale(0.98); }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .success {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .success h2 { font-family: 'Oswald', sans-serif; color: #FFCC00; margin-bottom: 10px; }
+  .success p { color: #bbb; }
+</style>
+</head>
+<body>
+<div class="card">
+  <form id="form">
+    <span class="badge">FIGHT NIGHT</span>
+    <h1>Выбери свою <span>музыку</span> для выхода</h1>
+    <p class="subtitle">Один боксёр — один трек. Вставь ссылку с Яндекс.Музыки.</p>
+
+    <div class="field">
+      <label for="boxer">Кто ты?</label>
+      <select id="boxer" required>
+        <option value="" disabled selected>— Выбери своё имя —</option>
+        <option>Иванов Иван</option>
+        <option>Петров Пётр</option>
+        <option>Сидоров Алексей</option>
+        <option>Кузнецов Дмитрий</option>
+        <option>Смирнов Николай</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="url">Ссылка на трек</label>
+      <input type="url" id="url" placeholder="https://music.yandex.ru/album/.../track/..." required
+             pattern="https?://music\.yandex\.(ru|com)/.*"
+             title="Ссылка должна быть с music.yandex.ru">
+      <p class="hint">Поделиться → «Ссылка на трек» (не на плейлист)</p>
+    </div>
+
+    <button type="submit" id="btn">Отправить</button>
+  </form>
+
+  <div class="success" id="success">
+    <h2>✅ Принято!</h2>
+    <p>Твой трек сохранён. Увидимся на ринге 🥊</p>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'ВСТАВЬТЕ_СЮДА_ВАШ_URL_ИЗ_APPS_SCRIPT';
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  btn.textContent = 'Отправка...';
+
+  const data = {
+    boxer: document.getElementById('boxer').value,
+    trackUrl: document.getElementById('url').value
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', // обязательно для Apps Script
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(data)
+    });
+    document.getElementById('form').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+  } catch (err) {
+    alert('Ошибка отправки: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = 'Отправить';
+  }
+});
+</script>
+</body>
+</html>
